@@ -1,9 +1,7 @@
-import Data.List ((\\))
-
 -- Exercise 1
 ---- 1
 fun1 :: [Integer] -> Integer
-fun1 = product . map ((-)2) . filter even
+fun1 = product . map (2-) . filter even
 ---- 2
 fun2 :: Integer -> Integer
 fun2 = sum . filter even . takeWhile (/=1) . iterate next
@@ -48,6 +46,22 @@ myFoldl f base xs = foldr (flip f) base (reverse xs)
 
 
 -- Exerice 4
-sieveSundaram :: Integer -> [Integer]
-sieveSundaram = map ((+1) . (*2)) . filterNums . enumFromTo 1
-    where filterNums lst = lst \\ [i+j+2*i*j | i <- lst, j <- lst, i <= j]
+mergeSorted :: (Ord a) => [[a]] -> [a]
+mergeSorted []           = []
+mergeSorted ([]:yss)     = mergeSorted yss
+mergeSorted ((x:xs):yss) = x : mergeSorted (insert [] xs yss)
+    where insert prev x []                     = prev ++ [x]
+          insert prev x yss@(y:ys) | x < y     = prev ++ (x:yss)
+                                   | otherwise = insert (prev ++ [y]) x ys
+
+diffSorted :: (Ord a) => [a] -> [a] -> [a]
+diffSorted [] _ = []
+diffSorted x [] = x
+diffSorted xxs@(x:xs) yys@(y:ys) | x < y     = x : diffSorted xs yys
+                                 | x > y     = diffSorted xxs ys
+                                 | otherwise = diffSorted xs yys
+
+primes :: Integer -> [Integer]
+primes upTo | upTo < 2 = []
+primes upTo = let n = ceiling $ fromIntegral (upTo - 2) / 2 in 2 : map ((+1) . (*2)) (diffSorted [1..n] $ filteredNums n)
+    where filteredNums n = mergeSorted $ [takeWhile (<=n) [i+j+2*i*j | j <- [i..n]] | i <- [1..n]]
