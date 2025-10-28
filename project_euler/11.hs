@@ -30,7 +30,7 @@ diags xs = concat [d1,d2,d3,d4]
           diag r = transpose . zipWith ($) (map drop r)
 
 allDirections :: [[a]] -> [[a]]
-allDirections xs = concatMap ($xs) [id,transpose,diags]
+allDirections xs = concatMap ($ xs) [id,transpose,diags]
 
 adjGroups :: Int -> [a] -> [[a]]
 adjGroups size = takeWhile ((>=size) . length) . map (take size) . tails

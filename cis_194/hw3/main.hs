@@ -5,9 +5,9 @@ import Data.Map.Lazy (empty, insertWith, findWithDefault)
 
 -- Exercise 1
 skips :: [a] -> [[a]]
-skips xs = map (skip . fst) enumed
-    where skip i = map snd $ filter ((==0) . (`mod` i) . fst) enumed
-          enumed = zip [1..] xs
+skips xs = zipWith (const skip) xs [0..]
+    where skip i = map snd $ filter fst $ zip (mask i) xs
+          mask i = cycle $ replicate i False ++ [True]
 
 -- Exercise 2
 localMaxima :: [Integer] -> [Integer]

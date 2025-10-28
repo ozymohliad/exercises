@@ -7,7 +7,7 @@ toDigitsRev x
 
 -- Exercise 2
 doubleEveryOther :: [Integer] -> [Integer]
-doubleEveryOther = zipWith (\i x -> if even i then x else 2 * x) [0..]
+doubleEveryOther = zipWith (*) (cycle [1, 2])
 
 
 -- Exercise 3
@@ -26,13 +26,13 @@ type Move = (Peg, Peg)
 hanoi :: Integer -> Peg -> Peg -> Peg -> [Move]
 hanoi 0 _ _ _ = []
 hanoi 1 a b _ = [(a,b)]
-hanoi x a b c = hanoi (x-1) a c b ++ hanoi 1 a b c ++ hanoi (x-1) c b a
+hanoi x a b c = hanoi (x-1) a c b ++ hanoi 1 a b undefined ++ hanoi (x-1) c b a
 
 
 -- Exercise 6
 hanoi4 :: Integer -> Peg -> Peg -> Peg -> Peg -> [Move]
 hanoi4 x a b c d
-    | x < 3     = hanoi x a b c
+    | x <= 2    = hanoi x a b c
     | x == 3    = [(a,c), (a,d), (a,b), (d,b), (c,b)]
     | otherwise = hanoi4 x2 a c b d ++ hanoi x1 a b d ++ hanoi4 x2 c b a d
     where x2 = x - x1
